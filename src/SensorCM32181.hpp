@@ -30,7 +30,7 @@
 
 
 #include "REG/CM32181Constants.h"
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 
 class SensorCM32181 :
     public SensorCommon<SensorCM32181>

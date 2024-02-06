@@ -31,7 +31,7 @@
 
 #include "REG/CHSC5816Constants.h"
 #include "TouchDrvInterface.hpp"
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 
 typedef struct __CHSC5816_Header {
     uint16_t fw_ver;

@@ -30,7 +30,7 @@
 
 
 #include "REG/XL9555Constants.h"
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 #include "ExtensionSPI.tpp"
 
 class ExtensionIOXL9555 :

@@ -30,7 +30,7 @@
 
 
 #include "REG/PCF85063Constants.h"
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 #include "SensorRTC.h"
 
 

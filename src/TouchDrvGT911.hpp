@@ -31,7 +31,7 @@
 
 #include "REG/GT911Constants.h"
 #include "TouchDrvInterface.hpp"
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 
 
 typedef struct GT911_Struct {

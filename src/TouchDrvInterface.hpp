@@ -32,7 +32,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "SensorLib.h"
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 
 typedef void    (*home_button_callback_t)(void *user_data);
 

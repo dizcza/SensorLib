@@ -31,7 +31,7 @@
 #include "REG/CSTxxxConstants.h"
 #include "touch/TouchClassCST226.h"
 #include "touch/TouchClassCST816.h"
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 
 class TouchDrvCSTXXX : public TouchDrvInterface
 {

@@ -31,7 +31,7 @@
 
 
 #include "REG/BMA423Constants.h"
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 
 class SensorBMA423 :
     public SensorCommon<SensorBMA423>

@@ -27,7 +27,7 @@
  * @date      2023-10-06
  */
 #include "../TouchDrvInterface.hpp"
-#include "../SensorCommon.tpp"
+#include "../SensorCommon.hpp"
 #include "../SensorLib.h"
 
 class TouchClassCST816 : public TouchDrvInterface,

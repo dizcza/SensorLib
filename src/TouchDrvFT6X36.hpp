@@ -31,7 +31,7 @@
 
 #include "REG/FT6X36Constants.h"
 #include "TouchDrvInterface.hpp"
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 
 class TouchDrvFT6X36 :
     public TouchDrvInterface,

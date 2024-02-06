@@ -28,7 +28,7 @@
  *
  */
 #include "REG/LTR533Constants.h"
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 
 
 class SensorLTR553 :

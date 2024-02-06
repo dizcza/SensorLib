@@ -40,6 +40,7 @@
 #include "esp_err.h"
 #include <cstring>
 #include "esp_idf_version.h"
+#include "i2cdev.h"
 #if ((ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_SENSORLIB_ESP_IDF_NEW_API))
 #include "driver/i2c_master.h"
 #else

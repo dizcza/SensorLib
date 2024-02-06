@@ -28,7 +28,7 @@
  */
 
 #include "../TouchDrvInterface.hpp"
-#include "../SensorCommon.tpp"
+#include "../SensorCommon.hpp"
 
 class TouchClassCST226 : public TouchDrvInterface,
     public SensorCommon<TouchClassCST226>

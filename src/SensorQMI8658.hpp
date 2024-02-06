@@ -29,7 +29,7 @@
  */
 
 #include "REG/QMI8658Constants.h"
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 #ifndef ARDUINO
 #include <math.h>
 #include <stdio.h>

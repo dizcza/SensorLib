@@ -29,7 +29,7 @@
  */
 
 #include "REG/DRV2605Constants.h"
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 
 class SensorDRV2605 :
     public SensorCommon<SensorDRV2605>

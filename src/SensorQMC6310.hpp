@@ -30,7 +30,7 @@
 
 
 #include "REG/QMC6310Constants.h"
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 
 class Polar
 {

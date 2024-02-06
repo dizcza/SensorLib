@@ -29,7 +29,7 @@
  */
 #pragma once
 
-#include "SensorCommon.tpp"
+#include "SensorCommon.hpp"
 #include "SensorBhy2Define.h"
 #include "bosch/bhy2_parse.h"
 #include "bosch/common/common.h"

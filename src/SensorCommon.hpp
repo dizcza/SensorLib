@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @file      SensorCommon.tpp
+ * @file      SensorCommon.hpp
  * @author    Lewis He (lewishe@outlook.com)
  * @date      2022-10-16
  *
@@ -184,32 +184,22 @@ public:
     {
         __i2c_num = port_num;
         log_i("Using ESP-IDF Driver interface.\n");
-        if (__has_init)return thisChip().initImpl();
         __sda = sda;
         __scl = scl;
         __addr = addr;
         __i2c_master_read = NULL;
         __i2c_master_write = NULL;
 
-        i2c_config_t i2c_conf;
-        memset(&i2c_conf, 0, sizeof(i2c_conf));
-        i2c_conf.mode = I2C_MODE_MASTER;
-        i2c_conf.sda_io_num = sda;
-        i2c_conf.scl_io_num = scl;
-        i2c_conf.sda_pullup_en = GPIO_PULLUP_ENABLE;
-        i2c_conf.scl_pullup_en = GPIO_PULLUP_ENABLE;
-        i2c_conf.master.clk_speed = SENSORLIB_I2C_MASTER_SEEED;
+        memset(&i2cdev, 0, sizeof(i2c_dev_t));
+        i2cdev.port = port_num;
+        i2cdev.addr = addr;
+        i2cdev.cfg.sda_io_num = sda;
+        i2cdev.cfg.scl_io_num = scl;
+        i2cdev.cfg.sda_pullup_en = GPIO_PULLUP_ENABLE;
+        i2cdev.cfg.scl_pullup_en = GPIO_PULLUP_ENABLE;
+        i2cdev.cfg.master.clk_speed = 400000;
+        i2c_dev_create_mutex(&i2cdev);
 
-        /**
-         * @brief Without checking whether the initialization is successful,
-         * I2C may be initialized externally,
-         * so just make sure there is an initialization here.
-         */
-        i2c_param_config(__i2c_num, &i2c_conf);
-        i2c_driver_install(__i2c_num,
-                           i2c_conf.mode,
-                           SENSORLIB_I2C_MASTER_RX_BUF_DISABLE,
-                           SENSORLIB_I2C_MASTER_TX_BUF_DISABLE, 0);
         __has_init = thisChip().initImpl();
         return __has_init;
     }
@@ -352,14 +342,13 @@ protected:
             return DEV_WIRE_NONE;
         }
 #else //ESP_IDF_VERSION
-        if (ESP_OK == i2c_master_write_read_device(
-                    __i2c_num,
-                    __addr,
-                    write_buffer,
-                    write_len,
-                    read_buffer,
-                    read_len,
-                    SENSORLIB_I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS)) {
+        if (i2c_dev_take_mutex(&i2cdev) != ESP_OK) {
+            return DEV_WIRE_TIMEOUT;
+        }
+        i2c_dev_write(&i2cdev, NULL, 0, write_buffer, write_len);
+        esp_err_t err = i2c_dev_read(&i2cdev, NULL, 0, read_buffer, read_len);
+        i2c_dev_give_mutex(&i2cdev);
+        if (ESP_OK == err) {
             return DEV_WIRE_NONE;
         }
 #endif //ESP_IDF_VERSION
@@ -388,11 +377,12 @@ protected:
             return DEV_WIRE_NONE;
         }
 #else //ESP_IDF_VERSION
-        if (ESP_OK == i2c_master_write_to_device(__i2c_num,
-                __addr,
-                buf,
-                length,
-                SENSORLIB_I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS)) {
+        if (i2c_dev_take_mutex(&i2cdev) != ESP_OK) {
+            return DEV_WIRE_TIMEOUT;
+        }
+        esp_err_t err = i2c_dev_write(&i2cdev, NULL, 0, buf, length);
+        i2c_dev_give_mutex(&i2cdev);
+        if (ESP_OK == err) {
             return DEV_WIRE_NONE;
         }
 #endif //ESP_IDF_VERSION
@@ -515,13 +505,12 @@ protected:
             return DEV_WIRE_NONE;
         }
 #else //ESP_IDF_VERSION
-        if (ESP_OK == i2c_master_write_read_device(__i2c_num,
-                __addr,
-                (uint8_t *)&reg,
-                __reg_addr_len,
-                buf,
-                length,
-                SENSORLIB_I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS)) {
+        if (i2c_dev_take_mutex(&i2cdev) != ESP_OK) {
+            return DEV_WIRE_TIMEOUT;
+        }
+        esp_err_t err = i2c_dev_read_reg(&i2cdev, reg, buf, length);
+        i2c_dev_give_mutex(&i2cdev);
+        if (ESP_OK == err) {
             return DEV_WIRE_NONE;
         }
 #endif //ESP_IDF_VERSION
@@ -671,6 +660,7 @@ protected:
 
 #elif defined(ESP_PLATFORM)
     i2c_port_t  __i2c_num;
+    i2c_dev_t     i2cdev;
 #if ((ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_SENSORLIB_ESP_IDF_NEW_API))
     i2c_master_bus_handle_t  bus_handle;
     i2c_master_dev_handle_t  __i2c_device;

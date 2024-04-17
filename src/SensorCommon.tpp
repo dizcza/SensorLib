@@ -68,11 +68,23 @@ public:
         __dataMode = dataMode;
     }
 
-    bool begin(PLATFORM_WIRE_TYPE &w, uint8_t addr)
+    bool begin(PLATFORM_WIRE_TYPE &w, uint8_t addr, int sda, int scl)
     {
         log_i("Using Arduino Wire interface.\n");
         if (__has_init)return thisChip().initImpl();
         __wire = &w;
+        __sda = sda;
+        __scl = scl;
+#if defined(NRF52840_XXAA) || defined(NRF52832_XXAA)
+        __wire->begin();
+#elif defined(ARDUINO_ARCH_RP2040)
+        __wire->end();
+        __wire->setSDA(__sda);
+        __wire->setSCL(__scl);
+        __wire->begin();
+#else
+        __wire->begin(__sda, __scl);
+#endif
         __addr = addr;
         __spi = NULL;
         __i2c_master_read = NULL;
